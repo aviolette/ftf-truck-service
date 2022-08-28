@@ -1,3 +1,5 @@
+from typing import Optional
+
 from aws_lambda_powertools.utilities.parser import BaseModel
 from aws_lambda_powertools.utilities.parser import root_validator
 
@@ -60,3 +62,6 @@ class AWSSingleTableModel(BaseModel):
 class Truck(AWSSingleTableModel):
     _key = "id"
     id: str
+    name: str
+    twitter_handle: Optional[str]
+    url: Optional[str]

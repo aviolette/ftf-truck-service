@@ -28,6 +28,14 @@ def redirect(url: str) -> dict:
     }
 
 
+def created(body: dict):
+    return {
+        "statusCode": 201,
+        "headers": {"Content-Type": "application/json"},
+        "body": json.dumps(body),
+    }
+
+
 def no_response():
     return {"statusCode": 204}
 
