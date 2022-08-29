@@ -34,7 +34,18 @@ functions:
       - httpApi:
           path: /trucks
           method: get
-
+#  updateTruck:
+#    handler: handler.update_truck
+#    events:
+#      - httpApi:
+#          path: /trucks/{id}
+#          method: put
+  deleteTruck:
+    handler: handler.delete_truck
+    events:
+      - httpApi:
+          path: /trucks/{id}
+          method: delete
 
 resources:
   Resources:

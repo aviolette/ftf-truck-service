@@ -40,6 +40,14 @@ def no_response():
     return {"statusCode": 204}
 
 
+def not_found(message):
+    return {
+        "statusCode": 404,
+        "headers": {"Content-Type": "application/json"},
+        "body": json.dumps({"error": message}),
+    }
+
+
 def unprocessable(message):
     return {
         "statusCode": 422,
