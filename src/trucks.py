@@ -74,3 +74,31 @@ class TruckService:
             if e.response["Error"]["Code"] == "ConditionalCheckFailedException":
                 raise NotFoundException(truck_id)
             raise
+
+    def update_truck(self, truck):
+        now = datetime.utcnow()
+        try:
+            item = self.ftf_table.update_item(
+                Key={
+                    "PK": f"TRUCK#{truck.id}",
+                    "SK": f"TRUCK#{truck.id}",
+                },
+                UpdateExpression="SET name = :name, "
+                                 "twitter_handle = :twitter_handle, "
+                                 "url = :url, "
+                                 "updated_at = :updated",
+                ExpressionAttributeValues={
+                    ":name": truck.name,
+                    ":twitter_handle": truck.twitter_handle,
+                    ":url": truck.url,
+                    ":update_at": now.isoformat(),
+                },
+                ConditionExpression="attribute_exists(PK)",
+                ReturnValues="UPDATED_NEW",
+            )
+
+            return item.dict()
+        except ClientError as e:
+            if e.response["Error"]["Code"] == "ConditionalCheckFailedException":
+                raise NotFoundException(truck.id)
+            raise

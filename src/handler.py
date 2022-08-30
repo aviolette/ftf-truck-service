@@ -1,6 +1,5 @@
 import json
 import os
-from datetime import datetime
 
 import boto3
 
@@ -16,10 +15,8 @@ from src.lambda_utils import (
 from src.trucks import NotFoundException, TruckAlreadyExistsException, TruckService
 
 FTF_TABLE = os.environ.get("FTF_TABLE", "ftf_engine")
-
 dynamodb = boto3.resource("dynamodb")
 ftf_table = dynamodb.Table(FTF_TABLE)
-
 truck_service = TruckService(ftf_table)
 
 
@@ -32,6 +29,7 @@ def create_truck(event, _context):
         return unprocessable("Truck already exists")
 
 
+@lambda_exception_wrapper
 def delete_truck(event, context):
     truck_id = event["pathParameters"]["id"].strip()
     try:
@@ -42,33 +40,14 @@ def delete_truck(event, context):
     return no_response()
 
 
+@lambda_exception_wrapper
 def update_truck(event, _context):
     truck = Truck(**json.loads(event["body"]))
-    now = datetime.utcnow()
     try:
-        item = ftf_table.update_item(
-            Key={
-                "PK": f"TRUCK#{truck.id}",
-                "SK": f"TRUCK#{truck.id}",
-            },
-            UpdateExpression="SET name = :name, "
-                             "twitter_handle = :twitter_handle, "
-                             "url = :url, "
-                             "updated_at = :updated",
-            ExpressionAttributeValues={
-                ":name": truck.name,
-                ":twitter_handle": truck.twitter_handle,
-                ":url": truck.url,
-                ":update_at": now.isoformat(),
-            },
-            ConditionExpression="attribute_exists(PK)",
-            ReturnValues="UPDATED_NEW",
-        )
-
-        return ok_json(item.dict())
-
-    except Exception as e:
-        return not_found(e)
+        updated = truck_service.update_truck(truck)
+        return ok_json(updated)
+    except NotFoundException:
+        return not_found(f"Truck not found {truck.id}")
 
 
 def get_trucks(_event, _context):
