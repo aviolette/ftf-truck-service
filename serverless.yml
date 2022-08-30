@@ -1,6 +1,12 @@
 service: ftf-engine
 frameworkVersion: '3'
 
+package:
+  patterns:
+    - '!test/**'
+    - '!.idea/**'
+    - '!venv/**'
+
 provider:
   name: aws
   runtime: python3.9
@@ -23,13 +29,13 @@ provider:
 
 functions:
   createTruck:
-    handler: handler.create_truck
+    handler: src.handler.create_truck
     events:
       - httpApi:
           path: /trucks
           method: post
   getTrucks:
-    handler: handler.get_trucks
+    handler: src.handler.get_trucks
     events:
       - httpApi:
           path: /trucks
@@ -41,7 +47,7 @@ functions:
 #          path: /trucks/{id}
 #          method: put
   deleteTruck:
-    handler: handler.delete_truck
+    handler: src.handler.delete_truck
     events:
       - httpApi:
           path: /trucks/{id}
