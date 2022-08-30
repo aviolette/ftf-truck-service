@@ -19,7 +19,7 @@ def truck2():
 
 
 def create_dynamodb():
-    dynamodb = boto3.resource("dynamodb")
+    dynamodb = boto3.resource("dynamodb", region_name='us-east-1')
     table_name = "ftf_engine"
     table = dynamodb.create_table(
         TableName=table_name,

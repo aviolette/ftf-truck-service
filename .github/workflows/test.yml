@@ -3,7 +3,7 @@ name: Test
 on: [push]
 
 jobs:
-  build_resume:
+  test_ftf_truck_service:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
