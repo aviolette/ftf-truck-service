@@ -3,7 +3,6 @@ import os
 
 import boto3
 
-from models import Truck
 from src.lambda_utils import (
     created,
     lambda_exception_wrapper,
@@ -12,6 +11,7 @@ from src.lambda_utils import (
     ok_json,
     unprocessable,
 )
+from src.models import Truck
 from src.trucks import NotFoundException, TruckAlreadyExistsException, TruckService
 
 FTF_TABLE = os.environ.get("FTF_TABLE", "ftf_engine")

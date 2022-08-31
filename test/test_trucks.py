@@ -4,8 +4,8 @@ import boto3
 import pytest
 from moto import mock_dynamodb
 
-from models import Truck
-from src.trucks import TruckService
+from src.models import Truck
+from src.trucks import NotFoundException, TruckAlreadyExistsException, TruckService
 
 
 @pytest.fixture
@@ -56,13 +56,45 @@ def create_dynamodb():
 
 
 @mock_dynamodb
+def test_delete_truck(truck1):
+    table = create_dynamodb()
+    service = TruckService(table)
+    service.create_truck(truck1)
+
+    service.delete_truck(truck1.id)
+
+    item = table.get_item(Key={"PK": "TRUCK#truck1", "SK": "TRUCK#truck1"})
+    assert item['Item']['archived']
+
+
+@mock_dynamodb
+def test_delete_truck_not_exists(truck2):
+    table = create_dynamodb()
+    service = TruckService(table)
+
+    with pytest.raises(NotFoundException):
+        service.delete_truck(truck2.id)
+
+
+@mock_dynamodb
 def test_create_truck(truck1):
     table = create_dynamodb()
     service = TruckService(table)
 
     resp = service.create_truck(truck1)
 
-    print("hello")
+    assert resp['id'] == truck1.id
+    assert resp['name'] == truck1.name
+
+
+@mock_dynamodb
+def test_create_truck_exists(truck1):
+    table = create_dynamodb()
+    service = TruckService(table)
+
+    service.create_truck(truck1)
+    with pytest.raises(TruckAlreadyExistsException):
+        service.create_truck(truck1)
 
 
 @mock_dynamodb

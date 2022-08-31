@@ -2,7 +2,7 @@ from datetime import datetime
 
 from botocore.exceptions import ClientError
 
-from models import Truck
+from src.models import Truck
 
 
 class TruckAlreadyExistsException(Exception):
@@ -55,7 +55,7 @@ class TruckService:
                 raise TruckAlreadyExistsException()
             raise
 
-    def delete_truck(self, truck_id):
+    def delete_truck(self, truck_id: str):
         try:
             self.ftf_table.update_item(
                 Key={
