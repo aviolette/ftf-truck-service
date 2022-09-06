@@ -28,29 +28,23 @@ provider:
 
 
 functions:
-  createTruck:
-    handler: src.handler.create_truck
+  createVendor:
+    handler: src.handler.create_vendor
     events:
       - httpApi:
-          path: /trucks
+          path: /vendors
           method: post
-  getTrucks:
-    handler: src.handler.get_trucks
+  getVendors:
+    handler: src.handler.get_vendors
     events:
       - httpApi:
-          path: /trucks
+          path: /vendors
           method: get
-#  updateTruck:
-#    handler: handler.update_truck
-#    events:
-#      - httpApi:
-#          path: /trucks/{id}
-#          method: put
-  deleteTruck:
-    handler: src.handler.delete_truck
+  deleteVendor:
+    handler: src.handler.delete_vendor
     events:
       - httpApi:
-          path: /trucks/{id}
+          path: /vendors/{id}
           method: delete
 
 resources:

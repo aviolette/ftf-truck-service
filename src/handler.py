@@ -11,29 +11,29 @@ from src.lambda_utils import (
     ok_json,
     unprocessable,
 )
-from src.models import Truck
-from src.trucks import NotFoundException, TruckAlreadyExistsException, TruckService
+from src.models import Vendor
+from src.vendors import NotFoundException, VendorAlreadyExistsException, VendorService
 
 FTF_TABLE = os.environ.get("FTF_TABLE", "ftf_engine")
 dynamodb = boto3.resource("dynamodb")
 ftf_table = dynamodb.Table(FTF_TABLE)
-truck_service = TruckService(ftf_table)
+vendor_service = VendorService(ftf_table)
 
 
 @lambda_exception_wrapper
-def create_truck(event, _context):
-    truck = Truck(**json.loads(event["body"]))
+def create_vendor(event, _context):
+    vendor = Vendor(**json.loads(event["body"]))
     try:
-        return created(truck_service.create_truck(truck))
-    except TruckAlreadyExistsException as e:
+        return created(vendor_service.create_vendor(vendor))
+    except VendorAlreadyExistsException as e:
         return unprocessable("Truck already exists")
 
 
 @lambda_exception_wrapper
-def delete_truck(event, context):
+def delete_vendor(event, context):
     truck_id = event["pathParameters"]["id"].strip()
     try:
-        truck_service.delete_truck(truck_id)
+        vendor_service.delete_vendor(truck_id)
     except NotFoundException:
         return not_found(f"Truck not found {truck_id}")
 
@@ -41,14 +41,14 @@ def delete_truck(event, context):
 
 
 @lambda_exception_wrapper
-def update_truck(event, _context):
-    truck = Truck(**json.loads(event["body"]))
+def update_vendor(event, _context):
+    truck = Vendor(**json.loads(event["body"]))
     try:
-        updated = truck_service.update_truck(truck)
+        updated = vendor_service.update_vendor(truck)
         return ok_json(updated)
     except NotFoundException:
         return not_found(f"Truck not found {truck.id}")
 
 
-def get_trucks(_event, _context):
-    return ok_json({"data": truck_service.get_trucks()})
+def get_vendors(_event, _context):
+    return ok_json({"data": vendor_service.get_vendors()})

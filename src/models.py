@@ -59,7 +59,7 @@ class AWSSingleTableModel(BaseModel):
         return values
 
 
-class Truck(AWSSingleTableModel):
+class Vendor(AWSSingleTableModel):
     _key = "id"
     id: str
     name: str
