@@ -1,7 +1,4 @@
 import json
-import os
-
-import boto3
 
 from src.lambda_utils import (
     created,
@@ -12,12 +9,8 @@ from src.lambda_utils import (
     unprocessable,
 )
 from src.models import Vendor
-from src.vendors import NotFoundException, VendorAlreadyExistsException, VendorService
-
-FTF_TABLE = os.environ.get("FTF_TABLE", "ftf_engine")
-dynamodb = boto3.resource("dynamodb")
-ftf_table = dynamodb.Table(FTF_TABLE)
-vendor_service = VendorService(ftf_table)
+from src.services import vendor_service
+from src.vendors import NotFoundException, VendorAlreadyExistsException
 
 
 @lambda_exception_wrapper
