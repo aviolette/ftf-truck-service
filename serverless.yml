@@ -17,6 +17,11 @@ provider:
       statements:
         - Effect: Allow
           Action:
+            - geo:*
+          Resource:
+            - "*"
+        - Effect: Allow
+          Action:
             - dynamodb:Query
             - dynamodb:GetItem
             - dynamodb:PutItem
@@ -28,22 +33,28 @@ provider:
 
 
 functions:
+
   createVendor:
     handler: src.handler.create_vendor
     events:
-      - httpApi:
+      - http:
           path: /vendors
           method: post
   getVendors:
     handler: src.handler.get_vendors
     events:
-      - httpApi:
+      - http:
           path: /vendors
           method: get
+          authorizer:
+            type: COGNITO_USER_POOLS
+            arn: ${param:user_pool}
+            scopes:
+              - http://api.chicagofoodtruckfinder.com/vendor.read
   deleteVendor:
     handler: src.handler.delete_vendor
     events:
-      - httpApi:
+      - http:
           path: /vendors/{id}
           method: delete
 

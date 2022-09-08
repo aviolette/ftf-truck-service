@@ -65,3 +65,20 @@ class Vendor(AWSSingleTableModel):
     name: str
     twitter_handle: Optional[str]
     url: Optional[str]
+
+
+class Location(AWSSingleTableModel):
+    _key = "name"
+    name: str
+    latitude: float = -1
+    longitude: float = -1
+    valid: bool = True
+    description: Optional[str]
+    url: Optional[str]
+    radius: float = 0
+
+    def lnglat(self) -> list[float]:
+        return [self.longitude, self.latitude]
+
+    def is_valid(self):
+        return self.valid
